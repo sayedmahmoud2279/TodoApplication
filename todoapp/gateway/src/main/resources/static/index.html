@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body{
+            height: 100%;
+            overflow: hidden;
+        }
+        #sideBar{
+            min-height: calc(100vh - 56px);
+        }
+
+        #numberRecords{
+            min-width: 50%;
+        }
+        .h-fit{
+            height: calc(100vh - 56px);
+        }
+        .content{
+            background-color: #edf0f6;
+            min-height: calc(100vh - 56px);
+            overflow-y: scroll;
+        }
+        .page-link{
+          cursor: pointer;
+        }
+        .fa-trash, .dropend {
+            display: block;
+            text-align: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .fa-xmark{
+            cursor: pointer;
+        }
+        .fa-trash:hover, .fa-xmark:hover{
+            color: red;
+        }
+        .fa-folder{
+            font-size: 64px;
+        }
+        .fa-ellipsis-vertical{
+            display: block;
+            text-align: right;
+            cursor: pointer;
+        }
+
+        .filesContainer .card{
+            height: 300px;
+        }
+
+        .editableInput{
+            border: none;
+            outline: none;
+        }
+
+        .taskField{
+            width: 90%;
+            margin-left: 10px;
+        }
+
+        .dropend .dropdown-toggle::after{
+            content: none;
+        }
+
+        .taskContainer{
+            max-height: 200px;
+            overflow: hidden;
+        }
+
+        .anti-container{
+            max-height: 350px;
+            overflow-y: scroll;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Start navbar -->
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand">Home</a>
+          <div class="d-flex align-items-center" role="search">
+            <h5 class="me-3">Username</h5>
+            <button type="button" class="btn btn-danger">Logout</button>
+          </div>
+        </div>
+      </nav>
+    <!-- End navbar -->
+    <div class="d-flex h-fit">
+        <!-- Start SideBar -->
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;" id="sideBar" bis_skin_checked="1">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+              <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+              <span class="fs-4" id="currentPage">Home</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+              <li class="nav-item">
+                <a href="#" class="nav-link active loadFolders" aria-current="page">
+                  My Todos
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link text-white loadShared">
+                  Shared with me
+                </a>
+              </li>
+            </ul>
+            <hr>
+        </div>
+        <!-- End SideBar -->
+
+        <!-- Start Content -->
+        <div class="container-fluid pt-5 content">
+            <!-- Change folder name according to current folder -->
+            <h3 class="folderName">Root Folder</h3> 
+            <div class="container w-100 border bg-light mt-4 p-3">
+                <div class="route d-flex align-items-center h4">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>Back</span>
+                </div>
+                <div class="d-flex justify-content-evenly">
+                    <button type="button" class="btn btn-primary d-block ms-auto addTodoBtn">Add TodoList</button>
+                    <button type="button" class="btn btn-primary d-block ms-3 createTodoBtn">Create TodoList</button>
+                    <button type="button" class="btn btn-primary d-block ms-3 createFolderBtn">Create Folder</button>
+                </div>
+                <hr>
+                <div class="foldersContainer mb-3" data-file-type="folder">
+                    <h4>Folders</h4> 
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="card me-2 mb-2 folder" style="width: 18rem;">
+                                <div class="card-body">
+                                    <i class="fa-solid fa-trash delete"></i>
+                                    <div class="folderClick" data-folder-id="5">
+                                        <i class="fa-solid fa-folder"></i>
+                                        <input type="text" class="editableInput text-center fw-bold" value="folderName">
+                                    </div>
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="filesContainer" data-file-type="todo">
+                    <h4>Files</h4> 
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="card me-2 todo" style="width: 18rem;">
+                                <div class="card-body d-flex flex-column">
+                                    <i class="fa-solid fa-trash delete"></i>
+                                    <input type="text" class="editableInput text-center fw-bold" value="Todo List">
+                                    <div class="taskContainer">
+                                        <div class="d-flex justify-content-between align-items-center task">
+                                            <input class="form-check-input status" type="checkbox" value="">
+                                            <input type="text" class="taskField editableInput" maxlength="100">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="btn-group dropend mt-auto">
+                                        <i class="fa-solid fa-ellipsis-vertical mt-auto dropdown-toggle ms-auto" data-bs-toggle="dropdown"></i>
+                                        <ul class="dropdown-menu">
+                                            <!-- Dropdown menu links -->
+                                            <li><a class="dropdown-item" href="#">Action</a></li>
+                                            <li><a class="dropdown-item" href="#">Action two</a></li>
+                                            <li><a class="dropdown-item" href="#">Action three</a></li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Content -->
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Const Links
+        const BASE = window.location.origin
+        const FOLDERURL = new URL("http://localhost:8080/folders")
+        const USERURL = new URL("http://localhost:8080/users")
+        // const CREATEFOLDERURL = new URL(BASE + "/folder/")
+
+        // Const 
+        const FOLDERCONTAINER = document.querySelector(".foldersContainer")
+        const TODOCONTAINER = document.querySelector(".filesContainer")
+        const CREATEFOLDER = document.querySelector(".createFolderBtn");
+        const CREATETODO = document.querySelector(".createTodoBtn");
+        const ADDTODO = document.querySelector(".addTodoBtn");
+        const BACK = document.querySelector(".route");
+        const FOLDERNAME = document.querySelector(".folderName");
+
+        const FILETYPES = ['folder', 'todo']
+
+        window.addEventListener("beforeunload", () => {
+            window.history.pushState({}, "", "/index.html")
+        })
+
+        window.addEventListener("DOMContentLoaded", async () =>  {
+            await loadFolders()
+            await loadFiles()
+
+            BACK.addEventListener("click", () => {
+                let folderId = parseInt(sessionStorage.getItem("previousFolder"))
+                if (folderId) {
+                    redirectFolder(folderId)
+                }
+            })
+
+            CREATEFOLDER.addEventListener("click", () => {
+                // Send User a Folder Form
+                createFolderPopUp()
+            })
+
+            CREATETODO.addEventListener("click", () => {
+                buildTodoPopUp()
+                let todo = document.querySelector(".modalDiv .todo")
+                stylingTodoPopup(todo)
+
+                let taskContianer = todo.querySelector(".taskContainer")
+                taskContianer.classList.add("anti-container")
+            })
+
+            ADDTODO.addEventListener("click", () => {
+                // It has a scrollable form that has all todo lists not in currentFolder and with logged user + Parent Folder Name + Check box to send 
+                // Save button apply new changes
+                // Display Pop up 
+                //      [Table (todo - folder - checkbox)]
+                // Press Save
+                //      Send Request Move array of todo list to currentFolder
+                createMovePopUp()
+            })
+        
+            let navItems = document.querySelectorAll(".nav-link")
+            navItems.forEach(item => {
+                item.addEventListener("click", (e) => {
+                    let element =  e.target
+                    if (element.classList.contains("active")){
+                        return
+                    }
+                    // UI Effect
+                    navItems.forEach(ele => {
+                        ele.classList.remove("active")
+                    })
+                    element.classList.add("active")
+
+                    // Change Page
+                    if (element.classList.contains("loadFolders")){
+                        FOLDERCONTAINER.classList.remove("d-none")
+                        loadFolders(+getCurrentFolder())
+                        loadFiles()
+                    }
+                    else{
+                        FOLDERCONTAINER.classList.add("d-none")
+                        loadShared()
+                    }
+
+                })
+            })
+        })
+
+ 
+        // Shortcut
+        function enablingShortcut(container){
+            let cpyBtns = document.querySelectorAll(".shortcutBtn")
+            const fileType = container.dataset.fileType
+
+            cpyBtns.forEach(btn => {
+                let data = extractDetails(btn, container)
+                let folderId = getCurrentFolder()
+                let url = `${FOLDERURL}/${folderId}`
+                if (fileType == "todo"){
+                    url += `/todo`
+                }
+                url += `/shortcut`
+                let fileId = data[0]
+                let fileName = data[1]
+                let action = "Add Shortcut "
+
+                const handleCopyClick = () => {
+                    createCopyPopup(action, fileType, fileId, fileName, url);
+                };
+
+                btn.removeEventListener('click', handleCopyClick)
+                btn.addEventListener('click', handleCopyClick)
+            })
+
+
+        }
+
+        // Copy Function
+        function copySaveBtn(url, action){
+            let saveBtn = document.querySelector("#save")
+            console.log("Save Button Entered : " + action)
+            console.log(saveBtn)
+            saveBtn.addEventListener("click", () => {
+                console.log("Clicked")
+                let selectElement = document.querySelector(".modal select")
+                let parentFolder = +selectElement.value
+                let todoId = +selectElement.dataset.todoId
+                let data = {
+                    "id" : parentFolder,
+                    "todoIdList" : [todoId]
+                }
+                fetch(url, {
+                    method : "POST",
+                    headers : {
+                        "Content-Type" : 'application/json',
+                        ...addHeader()
+                    },
+                    body : JSON.stringify(data)
+                })
+                .then(response => {
+                    deletingModal()
+                    loadFiles()
+                })
+
+            })
+        }
+
+        function createCopyPopup(action, fileType, fileId, fileName, url){
+            let title = createTitleModal(`${action} ${fileType} : ${fileName}`)
+            // TODO change url
+            const GETFOLDERUSER = FOLDERURL + "/user"
+            let options = ""
+            // let folders = getLists(url)
+            getLists(GETFOLDERUSER)
+            .then(folders => {
+                // Make request for get folders by user
+                folders.forEach(folder => {
+                    options += `<option value="${folder.id}">${folder.name}</option>`
+                })
+                let body = `
+                    <div class="viewChoice">
+                        <select class="form-select" aria-label="Default select example" data-todo-id="${fileId}">
+                            <option selected disabled>--Folders--</option>
+                            ${options}
+                        </select>
+                    </div>
+                `
+                createPopUp(title, body)
+                copySaveBtn(url, action)
+            })
+            
+        }
+
+        function enablingCopy(container){
+            let cpyBtns = document.querySelectorAll(".copyBtn")
+            const fileType = container.dataset.fileType
+
+            
+            
+            cpyBtns.forEach(btn => {
+                let data = extractDetails(btn, container)
+                // Implement to get all folders for user except current
+                let fileId = data[0]
+                let fileName = data[1]
+                let folderId = getCurrentFolder()
+                let url = `${FOLDERURL}/${folderId}`
+                if (fileType == "todo"){
+                    url += `/todo`
+                }
+                url += `/copy`
+                let action = "Copy"
+
+                const handleCopyClick = () => {
+                    createCopyPopup(action, fileType, fileId, fileName, url);
+                };
+
+
+                btn.removeEventListener("click", handleCopyClick)
+                btn.addEventListener("click", handleCopyClick)
+            })
+
+        }
+
+        
+
+        // Share Function
+            // Press Share [Public - Private - Users - Organization]
+        // Show Item Name + Save id in name 
+        // Show View Choices as select option
+        // if users
+        //      Show input type user => Press Enter => Send Request Check of user is found return userId => Build block with username
+        // Show Edit || Read only object
+        // Save btn send request to backend
+        function shareSaveBtn(fileType, fileId, fileName){
+            let saveBtn = document.querySelector("#save")
+
+            saveBtn.addEventListener("click", () => {
+                let view = document.querySelector(".modal-body select").value
+                let editable = document.querySelector(".modal-body .editCheck input")?.checked || false
+                let users = []
+
+                let usersDiv = document.querySelectorAll(".modal-body .usersBlocks span")
+                usersDiv.forEach(user => {
+                    users.push(user.dataset.userId)
+                })
+
+                data = {
+                    "fileType" : fileType,
+                    "fileId" : fileId,
+                    "view" : view,
+                    "editable" : editable,
+                    "usersId" : users
+                }
+
+                // TODO Change URL
+                let folderId = getCurrentFolder()
+                let url = `${FOLDERURL}/${folderId}`
+                if (fileType == "todo"){
+                    url += `/todo`
+                }
+                url += "/share"
+
+                fetch(url, {
+                    method : "POST",
+                    headers : {
+                        "Content-Type" : "application/json",
+                        ...addHeader()
+                    },
+                    body : JSON.stringify(data)
+                })
+                .then(result => {
+                    // Add Success message
+                    deletingModal()
+
+                })
+            })
+
+            
+        }
+
+        function addEditChoice(modalBody){
+            let editField = document.querySelector(".modal-body .editCheck")
+            if (editField){
+                return
+            }
+
+            let html = `
+            <div class="editCheck form-check">
+                <input class="form-check-input" type="checkbox" value="" id="editCheck">
+                <label class="form-check-label" for="editCheck">
+                    Enable Edit
+                </label>
+            </div>
+            `
+
+            modalBody.insertAdjacentHTML("beforeend", html)
+        }
+
+        function getUser(username){
+            let user = ""
+            let url = USERURL
+            url.searchParams.set("username", username)
+
+            fetch(url, {
+                headers : addHeader()
+            })
+            .then(response => response.json())
+            .then(result => {
+                // TODO
+                // Success Return user
+                // user = result
+            })
+
+            return user
+        }
+
+        function displayUserField(e){
+            if (e.key === "Enter"){
+                let username = e.target.value
+                let user = getUser(username)
+                // Check if user 
+                if (user){
+                    let userBlock = `
+                        <span class="btn btn-secondary" data-user-id="${user.id}">
+                            ${user.name}
+                            <i class="fa-solid fa-xmark"></i>
+                        </span>
+                    `
+
+                    document.querySelector(".usersBlocks").insertAdjacentHTML("beforeend", userBlock)
+                    document.querySelectorAll(".usersBlocks .fa-xmark").forEach(removeBtn => {
+                        removeBtn.removeEventListener("click", (e) => {
+                            e.target.parentNode.remove()
+                        })
+                        removeBtn.addEventListener("click", (e) => {
+                            e.target.parentNode.remove()
+                        })
+                    })
+
+                }
+                // TODO display Error
+            }
+        }
+
+        function enablingSelectField(modalBody){
+            let selectField = modalBody.querySelector("select")
+            
+            let html = `
+                <div class="users mb-2 mt-2">
+                    <input type="text" class="text-center fw-bold ms-auto me-auto mb-2 form-control" value="" style="width: 80%;">
+                    <div class="usersBlocks d-flex justify-content-between align-items-center">
+                    </div>
+                </div>
+            `
+
+            selectField.addEventListener("change", () => {
+                let selectVal = selectField.value
+                if (selectVal == "users"){
+                    let usersDiv = document.querySelector(".modal-body .users")
+                    if (!usersDiv){
+                        selectField.insertAdjacentHTML("afterend", html)
+
+                        usersDiv = document.querySelector(".modal-body .users")
+                        userField = usersDiv.querySelector("input")
+
+                        userField.addEventListener("keypress", displayUserField)
+                    }
+                    
+                }
+                else{
+                    document.querySelector(".modal-body .users")?.remove()
+                }
+
+                if (selectVal !== "private"){
+                    addEditChoice(modalBody)
+                }
+                else{
+                    document.querySelector(".modal-body .editCheck")?.remove()
+                }
+            })
+            
+            
+        }
+
+        function createSharePopup(fileType, fileId, fileName){
+            let title = createTitleModal(`Share ${fileType} : ${fileName}`)
+            let body = `
+                <div class="viewChoice mb-5">
+                    <select class="form-select" aria-label="Default select example">
+                        <option value="private" selected>private</option>
+                        <option value="public">public</option>
+                        <option value="users">users</option>
+                        <option value="organization">organization</option>
+                    </select>
+                </div>
+            `
+            createPopUp(title, body)
+            let modalBody = document.querySelector(".modal .modal-body")
+
+            enablingSelectField(modalBody)
+            shareSaveBtn(fileType, fileId, fileName)
+            
+        }
+
+        function extractFolderDetails(element){
+            let folderDiv = element.querySelector(".folderClick")
+            if (!folderDiv){
+                return []
+            }
+            let folderId = folderDiv.dataset.folderId
+            let folderName = folderDiv.querySelector("input").value
+
+            return [folderId, folderName]
+        }
+
+        function extractTodoDetails(element){
+            // console.log(element)
+            if(!element){
+                return []
+            }
+            let todoId = element.dataset.todoId
+            let todoName = element.querySelector("input").value
+
+            return [todoId, todoName]
+        }
+
+        function extractDetails(btn, container){
+            let element = btn
+            while(!element.classList.contains("card")){
+                element = element.parentNode
+            }
+
+            let fileType = container.dataset.fileType
+            let data = []
+            if (fileType == "folder"){
+                data = extractFolderDetails(element)
+            }
+            if (fileType == "todo"){
+                data = extractTodoDetails(element)
+            }
+
+            return data
+        }
+
+        function enablingShareBtn(container){
+            let shareBtns = container.querySelectorAll(".shareBtn")
+            const fileType = container.dataset.fileType
+            shareBtns.forEach(btn => {
+                let data = extractDetails(btn, container)
+
+                let fileId = data[0]
+                let fileName = data[1]
+
+                btn.removeEventListener('click', () => {
+                    createSharePopup(fileType, fileId, fileName)
+                })
+                btn.addEventListener('click', () => {
+                    
+                    createSharePopup(fileType, fileId, fileName)
+                })
+            })
+        }
+        
+        // Move Function
+        function buildDataSelection(todoLists, folders){
+            const folderMap = folders.reduce((acc, folder) => {
+                acc[folder.id] = folder.name 
+                return acc
+            }, {})
+
+            return todoLists.map(todo => {
+
+                return{
+                    ...todo,
+                    folderName : folderMap[todo.parentFolder]
+                }
+            })            
+        }   
+
+        async function getTodoAndFolders(){
+            // Setting URL for todos 
+            let folderId = getCurrentFolder()
+            let url = new URL(`${FOLDERURL}/${folderId}/todo`)
+            url.searchParams.set("bound", "outside")
+            let todoLists = await getLists(url)
+            console.log(todoLists)
+
+            url = new URL(FOLDERURL)
+            let folderList = []
+            for (todo of todoLists){
+                let parentFolder = todo.parentFolder + ""
+                if (!folderList.includes(parentFolder)){
+                    folderList.push(parentFolder)
+                    url.searchParams.append("folderId", parentFolder)
+                }
+            }
+            let folders = await getLists(url)
+            // console.log(buildDataSelection(todoLists, folders))
+            return buildDataSelection(todoLists, folders)
+        }
+
+        async function buildMovePopUp(){
+            let body = ""
+            let dataSelection = await getTodoAndFolders()
+
+
+            dataSelection.forEach(data => {
+                if (!data.folderName){
+                    return
+                }
+                body += `
+                <tr>
+                    <td>
+                        <h6 class="me-3">${data.name}</h6>
+                    </td>
+                    <td>
+                        <h6 class="me-3">${data.folderName}</h6>
+                    </td>
+                    <td>
+                        <input class="form-check-input status" type="checkbox" value="${data.id}">
+                    </td>
+                </tr>
+            `
+            })
+
+            return body
+            
+        }
+
+        function createMovePopUp(){
+            let title = createTitleModal("Add Todo Lists")
+            buildMovePopUp()
+            .then(data => {
+                let body = `
+                <table class="table table-borderless anti-container">
+                    <thead>
+                        <tr>
+                        <th scope="col">Todo</th>
+                        <th scope="col">Located</th>
+                        <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data}
+                    </tbody>
+                </table>
+                `
+                createPopUp(title, body)
+                saveMoveBtn()
+            })
+            
+
+            
+        }
+    
+        function saveMoveBtn(){
+            let saveBtn = document.querySelector("#save")
+            saveBtn.addEventListener("click", () => {
+                let todoBtnLists = document.querySelectorAll(".modalDiv input:checked")
+                let todoIdLists = []
+                todoBtnLists.forEach(btn => {
+                    todoIdLists.push(+btn.value)
+                })
+                let folderId = +getCurrentFolder()
+
+
+                data = {
+                    'id' : folderId,
+                    'todoIdList' : todoIdLists
+                }
+
+                // console.log(data)
+
+                let url = `${FOLDERURL}/${folderId}/todo/move`
+                fetch(url, {
+                    method : "POST",
+                    headers : {
+                        "Content-Type" : "application/json",
+                        ...addHeader()
+                    },
+                    body : JSON.stringify(data)
+                })
+                .then(response => {
+                    loadFiles()
+                    deletingModal()
+                })
+
+            })
+
+        }
+        
+        function enablingMove(container){
+            let cpyBtns = document.querySelectorAll(".moveBtn")
+            const fileType = container.dataset.fileType
+
+            cpyBtns.forEach(btn => {
+                let data = extractDetails(btn, container)
+                let folderId = getCurrentFolder()
+                let url = `${FOLDERURL}/${folderId}`
+                if (fileType == "todo"){
+                    url += `/todo`
+                }
+                url += `/move`
+                let fileId = data[0]
+                let fileName = data[1]
+                let action = "Move "
+
+                const handleCopyClick = () => {
+                    createCopyPopup(action, fileType, fileId, fileName, url);
+                };
+
+                btn.removeEventListener('click', handleCopyClick)
+                btn.addEventListener('click', handleCopyClick)
+            })
+        }
+       
+        // General Functions
+        function addHeader(){
+            if (getAccessToken()){
+                return {
+                "Authorization" : getAccessToken()
+                }
+            }
+            
+        }
+        
+        function getAccessToken(){
+            return sessionStorage.getItem("accessToken")
+        }
+
+        function clearContainer(container){
+            let element = container.querySelector(".row")
+            while (element.firstChild) {
+                element.firstChild.remove();
+            }
+        }
+
+        async function getLists(url){
+            let itemList = []
+            await fetch(url, {
+                headers : addHeader()
+            })
+            .then(response => response.json())
+            .then(result => {
+                
+                itemList = result
+
+            })
+            return itemList
+        }
+
+        function buildRow(){
+            let row = document.createElement("div")
+            row.classList.add("row")
+            
+            return row
+        }
+
+        async function saveCurrentFolder(folderId){
+            let parentFolder 
+            if (folderId === -1){
+                folderId = ""
+            }
+            // Make a request
+            let url = new URL(FOLDERURL.href)
+            url.searchParams.set("folderId", folderId)
+            let currentFolder = await getLists(url.href)
+            // Set values
+            folderId = currentFolder[0].id
+            parentFolder = currentFolder[0].parentFolder
+            FOLDERNAME.value = currentFolder[0].name
+            folderId = +folderId
+            parentFolder = +parentFolder
+            // Save to session
+            sessionStorage.setItem("currentFolder", folderId)
+            sessionStorage.setItem("previousFolder", parentFolder)
+        }
+
+        function getCurrentFolder(){
+            return sessionStorage.getItem("currentFolder")
+        }
+
+        function hasAnyClass(element, classList){
+            // console.log(element)
+            for (className of classList){
+                if (element.classList.contains(className)){
+                    return [className, true]
+                }
+            }
+            return false
+        }
+
+        function deleteItem(e){
+            let element = e.target
+            while(!hasAnyClass(element, FILETYPES)[1]){
+                element = element.parentNode
+            }
+            className = hasAnyClass(element, FILETYPES)[0];
+            element.remove()
+
+            if (className == "folder"){
+                let folderId = element.querySelector(".folderClick").dataset.folderId
+                deleteFolder(folderId)
+                // deleteFolder() fetch request
+            }
+            if (className == "todo"){
+                // console.log(element)
+                let id = element.dataset.todoId
+                deleteTodo(id)
+                // deleteTodo() fetch request
+            }
+
+        }
+
+        function enablingTrashBtns(container){
+            let deleteBtns =  container.querySelectorAll(".delete")
+
+            deleteBtns.forEach(btn => {
+                btn.removeEventListener("click", deleteItem)
+                btn.addEventListener("click", deleteItem)
+            })
+        }
+
+        function displayInPage(list, builder, container){
+            let row =  container.querySelector(".row")
+
+            list.forEach(item => {
+                row.insertAdjacentHTML("beforeend", builder(item))
+            })
+            deletingModal()
+            // Activate for trash buttons
+            enablingTrashBtns(container)
+            // Activate Share Buttons
+            enablingShareBtn(container)
+            // Activate Copy Buttons
+            enablingCopy(container)
+            // Activate Shorcut
+            enablingShortcut(container)
+            // Activate Move
+            enablingMove(container)
+        }
+
+        function createModal(){
+            let modalDiv = document.createElement("div")
+            modalDiv.classList = "modal fade show modalDiv"
+            modalDiv.style.display = "block"
+            modalDiv.id = "popWindow"
+            modalDiv.role = "dialog"
+            modalDiv.setAttribute("tabindex", "-1")
+            modalDiv.setAttribute("aria-modal", "true")
+            return modalDiv
+
+        }
+
+        function createOverlay(){
+            let overLay = document.createElement("div")
+            overLay.classList = "modal-backdrop fade show modalDiv"
+            return overLay
+        }
+
+        function deletingModal(){
+            let modals = document.querySelectorAll(".modalDiv")
+            if (modals){
+                modals.forEach(div => div.remove())
+                document.body.style.overflow = ""
+                setFolderUrl()
+            }
+        }
+
+        function removingAntiContainer(){
+            document.querySelector(".anti-container")?.classList.remove("anti-container")
+        }
+
+        function enablingCloseBtns(){
+            let closeBtns = document.querySelectorAll("button[data-bs-dismiss='modal']")
+            closeBtns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    deletingModal()
+                    removingAntiContainer() 
+                })
+            })
+
+        }
+
+        function folderSaveBtn(){
+            let saveBtn = document.querySelector("#save")
+            let folderField = document.querySelector("#folderField")
+            saveBtn.addEventListener("click", () => {
+                createFolder(folderField.value)
+            })
+        }
+
+        function displayPopUp(html){
+            let modalDiv = createModal()
+            let overLay = createOverlay()
+
+            modalDiv.innerHTML = html
+
+            document.body.appendChild(modalDiv)
+            document.body.appendChild(overLay)
+            document.body.style.overflow = "hidden"
+            // 
+
+            enablingCloseBtns()
+        }
+
+        function createPopUp(title, body){
+            console.log("Inside Function")
+            let html = `
+                <div class="modal-dialog modal-dialog-centered modal-dialog" >
+                    <div class="modal-content" >
+                        ${title}
+                        <div class="modal-body" >
+                            ${body}
+                        </div>
+                        <div class="modal-footer" >
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="save" >Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            `
+            displayPopUp(html)
+        }
+        
+        function isDelete(element){
+            return element.classList.contains("fa-solid")
+        }
+        
+        function isButtons(element){
+            return element.classList.contains("show") || element.classList.contains("dropdown-item")
+        }
+        
+        function createTitleModal(title){
+            return `
+                 <div class="modal-header" >
+                    <h1 class="modal-title fs-5">${title}</h1>
+                </div>
+            `
+        }
+        
+        // Folder Functions =>  Load Folders
+        async function loadFolders(folderId = -1){
+            // Change Folder Name in Page
+            let contianer = FOLDERCONTAINER
+            // Clear Contianer  
+            clearContainer(contianer)
+            // Get Folders from Backend
+            let url = FOLDERURL
+            if (folderId !== -1){
+                url += `/${folderId}`
+            }
+            let folders = await getLists(url)
+            // Show Folders in HTML
+            displayInPage(folders, buildFolderCard, contianer)
+            // Activating Routing
+            openFolder(contianer)
+            // Update Folder name
+            attachUpdateFolder(contianer)
+            // Save folder ID in Session
+            await saveCurrentFolder(folderId)
+            // Change url as Single Page Applicaiton
+            setFolderUrl()
+        }
+
+        function buildFolderCard(folder){
+            return `
+                <div class="card me-2 mb-2 folder" style="width: 18rem;">
+                    <div class="card-body">
+                        <i class="fa-solid fa-trash delete"></i>
+                        <div class="folderClick" data-folder-id="${folder.id}">
+                            <i class="fa-solid fa-folder"></i>
+                            <input type="text" class="editableInput text-center fw-bold" value="${folder.name}">
+                        </div>
+                    </div>
+                </div> 
+            `
+        }
+
+        function setFolderUrl(){
+            let folderId = sessionStorage.getItem("currentFolder")
+            window.history.pushState({}, "", `/folders/${folderId}`)
+        }
+
+        function createFolderPopUp(){ // fetch request
+            let title = createTitleModal("New Folder")
+            let body = `
+            <div class="mb-3">
+                <input type="text" class="form-control" id="folderField" value="Untitled Folder">
+            </div>
+            `
+            createPopUp(title, body)
+            folderSaveBtn()
+
+        }
+
+        async function createFolderRequest(data){
+            let folder = []
+        
+            await fetch(FOLDERURL.href, {
+                    method : "POST",
+                    headers: {
+                        "Content-Type": "application/json", // Set the Content-Type header to application/json
+                        ...addHeader()
+                    },
+                    body : JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    // TODO : Add Success condition
+                    if (result.name){
+                        folder.push(result)
+                    }
+                    // if failed then pop up message 
+            })
+            console.log(`Folder List : ${folder}`)
+            return folder
+        }
+
+        async function createFolder(folderName){
+            let data = {
+                "name" : folderName,
+                "parentFolder" : (+getCurrentFolder()) || 1
+            }
+            // Production code below
+            let folder  = await createFolderRequest(data)
+            if (folder.length !== 0){
+                let folderId = +getCurrentFolder()
+                loadFolders(folderId)
+            }
+            else {
+                deletingModal()
+            }
+            
+        }
+
+        function deleteFolder(id){
+            // TODO Fetch Request
+            let url = FOLDERURL + `/${id}`
+            fetch(url, {
+                    method : "DELETE",
+                    headers : addHeader()
+            })
+            .then(response => response.json())
+            .then(result => {
+                // TODO : Add Success condition
+                // folder = result
+                // if failed then pop up message 
+            })
+
+        }
+
+        async function redirectFolder(folderId){
+
+            await loadFolders(folderId)
+            await loadFiles()
+        }
+
+        function openFolder(container){
+            let folders =  container.querySelectorAll(".folderClick .fa-folder")
+            folders.forEach(folder => {
+                let folderId = folder.parentNode.dataset.folderId
+
+
+                folder.removeEventListener("click", () => {
+
+                    redirectFolder(folderId)
+                })
+                folder.addEventListener("click", () => {
+                    // console.log("Entered Folder open")
+                    redirectFolder(folderId)
+                })
+            })
+        }
+
+        function updateFolderRequest(data){
+            let url = FOLDERURL + `/${data.id}`
+            let folder = null
+            fetch(url, {
+                    method : "PUT",
+                    headers: {
+                        "Content-Type": "application/json", // Set the Content-Type header to application/json
+                        ...addHeader()
+                    },
+                    body : JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    // TODO : Add Success condition
+                    folder = result
+                    // if failed then pop up message 
+            })
+            console.log(folder)
+            return folder
+        }
+
+        function updateFolder(e){
+            let folderField = e.target
+            let folderName = folderField.value
+            let folderId = folderField.parentNode.dataset.folderId
+            // Prodcution Code Belown
+            data = {
+                "id" : folderId,
+                "name" : folderName
+            }
+            folder = updateFolderRequest(data)
+            folderField.value = folder.name
+            // Test Purpose
+            console.log(folderName)
+        }
+
+        function attachUpdateFolder(container){
+            let folderFields = container.querySelectorAll(".editableInput")
+            folderFields.forEach(field => {
+                field.removeEventListener("blur", updateFolder)
+                field.addEventListener("blur", updateFolder)
+            })
+        }
+        
+        // Todo Functions => Load Files
+        async function loadFiles(){
+            let container = TODOCONTAINER
+            // Clear Container
+            clearContainer(container)
+            // Get Todo from Backend
+            let folderId = getCurrentFolder()
+            console.log(folderId)
+            let url = new URL(`${FOLDERURL}/${folderId}/todo`)
+            url.searchParams.set("bound", "inside")
+            let files = await getLists(url)
+            // Display todo as files in HTML
+            displayInPage(files, buildTodoCard, container)
+            deleteEventTask()
+            createTodoPopUp()
+        }
+
+        function buildTask(tasks){
+            let tasksHTML = ""
+            if (tasks.length !== 0){
+                for (task of tasks){
+                    let checked = ""
+                    if (task.status == "completed"){
+                        checked = "checked"
+                    }
+
+                    tasksHTML += `
+                        <div class="d-flex justify-content-between align-items-center task" data-task-id="${task.id}">
+                            <input class="form-check-input status" type="checkbox" ${checked}>
+                            <input type="text" class="taskField editableInput" maxlength="100" value="${task.name}">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                    
+                    `
+                }
+            }
+            else {
+                tasksHTML = ` 
+                <div class="d-flex justify-content-between align-items-center task" data-task-id="">
+                    <input class="form-check-input status" type="checkbox" >
+                    <input type="text" class="taskField editableInput" maxlength="100" >
+                    <i class="fa-solid fa-xmark"></i>
+                </div>`
+
+            }
+
+            return tasksHTML
+        }
+
+        function buildTodoCard(todo, style=true){
+            let tasks = buildTask(todo.tasks)
+            let styleHTML = 'style="width: 18rem;"'
+            if (!style){
+                styleHTML = ""
+            }
+
+            return `
+                <div class="card me-2 mb-3 todo" ${styleHTML} data-todo-id="${todo.id}">
+                    <div class="card-body d-flex flex-column ">
+                        <i class="fa-solid fa-trash delete"></i>
+                        <input type="text" class="editableInput text-center fw-bold todoName" value="${todo.name}">
+                        <div class="taskContainer">
+                            ${tasks}
+                        </div>
+
+                        <div class="btn-group dropend mt-auto">
+                            <i class="fa-solid fa-ellipsis-vertical mt-auto dropdown-toggle ms-auto" data-bs-toggle="dropdown"></i>
+                            <ul class="dropdown-menu">
+                                <!-- Dropdown menu links -->
+                                <li><a class="dropdown-item shareBtn" >Share</a></li>
+                                <li><a class="dropdown-item moveBtn" >Move</a></li>
+                                <li><a class="dropdown-item copyBtn" >Copy</a></li>
+                                <li><a class="dropdown-item shortcutBtn" >Add Shortcut</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div> 
+            `
+        }
+
+        function setTodoUrl(todoId){
+            let folderId = sessionStorage.getItem("currentFolder")
+            window.history.pushState({}, "", `/folders/${folderId}/todo/${todoId}`)
+        }
+
+        function stylingTodoPopup(todo){
+            todo.querySelector(".dropend").remove()
+            todo.querySelector(".taskContainer").classList.add("anti-container")
+        }
+
+        function buildTodoPopUp(todo=null){
+            let todoCopy = todo?.cloneNode(true)
+            
+            let body = ""
+            if (todoCopy){
+                stylingTodoPopup(todoCopy)
+                body = todoCopy.innerHTML
+                let todoHtml = `
+                    <div class="card me-2 todo" style="text-align: center;" data-todo-id="${todo.dataset.todoId}">
+                        ${body}
+                    </div>
+                `
+                createPopUp("", todoHtml)
+            }
+            else{
+                console.log("Entered Empty Todo")
+                data = {
+                    'id' : "",
+                    'name' : "Untitled Todo",
+                    'tasks' : [],
+                }
+                body = buildTodoCard(data, false)
+                createPopUp("", body)
+            }
+            
+            addEventTask()
+            focusModalInput()
+            todoSaveBtn()
+        }
+
+        function focusModalInput(){
+            // console.log("Focus Function")
+            let modalInput =  document.querySelector(".modal .taskContainer input[type='text']")
+            modalInput.focus()
+        }
+
+        function clickOnTodo(e){
+            let element = e.target
+            if (isDelete(element) || isButtons(element)){
+                return
+            }
+
+            while (!element.classList.contains("todo")){
+                element = element.parentNode
+            }
+            
+            let todoId = element.dataset.todoId
+
+            setTodoUrl(todoId)
+            buildTodoPopUp(element)
+            deleteEventTask()
+        }
+        
+        function createTodoPopUp(){ // fetch request
+            let todoLists = document.querySelectorAll(".todo")
+
+            todoLists.forEach(todo => {
+                todo.removeEventListener("click", clickOnTodo)
+                todo.addEventListener("click", clickOnTodo)
+            })
+
+        }
+        
+        async function deleteTodo(id){
+            // TODO Fetch Request
+            let folderId = getCurrentFolder()
+            let url = FOLDERURL + `/${folderId}/todo/${id}`
+            await fetch(url, {
+                    method : "DELETE",
+                    headers : addHeader()
+            })
+            .then(response => response.json())
+            .then(result => {
+                // TODO : Add Success condition
+                // folder = result
+                // if failed then pop up message 
+                console.log("Todo is Deleted!")
+            })
+            // return folder
+        }
+
+        function deleteTaskRequest(todoId, id){
+            // TODO Fetch Request
+            console.log("Delete Now")
+            let folderId = getCurrentFolder()
+            let folder = {}
+            let url = FOLDERURL + `/${folderId}/todo/${todoId}/task/${id}`
+            return fetch(url, {
+                    method : "DELETE",
+                    headers : addHeader()
+            })
+            .then(response => response.json())
+
+        }
+
+        function addEventTask(){
+            taskFields = document.querySelectorAll(".taskField")
+            taskFields.forEach(task => {
+                task.removeEventListener("keypress", addTask)
+                task.addEventListener("keypress", addTask)
+            })
+        }
+        
+        function deleteTask(e){ // Fetch Request
+            // console.log("Element Now")
+            let task = e.target.parentNode
+            let taskContainer =  task.parentNode
+
+            let todoId = taskContainer.parentNode.parentNode.dataset.todoId
+            let childrenCount = taskContainer.querySelectorAll(".task").length
+            // Perform the fetch request without async/await
+            deleteTaskRequest(todoId, task.dataset.taskId)
+            .then(todo => {
+                substitueTodo(todo);
+
+                if (childrenCount === 1) {
+                    task.querySelector(".taskField").value = "";
+                    task.querySelector(".status").checked = false;
+                } else {
+                    task.remove();
+                }
+
+                deletingModal();
+
+            })
+            // Fetch Request to delete Task from backend
+        }
+
+        function deleteEventTask(){
+            deleteTasks =  document.querySelectorAll(".fa-xmark")
+
+            deleteTasks.forEach(mark => {
+                mark.removeEventListener("click", deleteTask)
+                mark.addEventListener("click", deleteTask)
+            })
+        }
+
+        function createTask(){
+            let html = `
+                <div class="d-flex justify-content-between align-items-center task">
+                    <input class="form-check-input status" type="checkbox" value="">
+                    <input type="text" class="taskField editableInput" maxlength="100">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+            `
+            return html
+        }
+
+        function addTask(e){
+            if (e.key === "Enter"){
+                let parentContainer = e.target.parentNode.parentNode
+                parentContainer.insertAdjacentHTML('beforeend', createTask()); 
+                addEventTask()
+                deleteEventTask()
+            }
+
+        }
+
+        function buildTaskRequest(taskContainer){
+            let tasksList = []
+            let tasksElements = taskContainer.querySelectorAll(".task")
+            tasksElements.forEach(task => {
+                let taskid = task.dataset?.taskId;
+                let taskName = task.querySelector("input[type='text']").value
+                let taskStatus = task.querySelector("input[type='checkbox']")
+
+                let status = "pending"
+                if (taskStatus.checked){
+                    status = "completed"
+                }
+
+                let taskData = {
+                    'id' : taskid,
+                    'name' : taskName,
+                    'status' : status
+                }
+                tasksList.push(taskData)
+            })
+            if (tasksList.length === 1 && tasksList[0].name == ""){
+                tasksList = []
+            }
+
+            return tasksList
+        }
+
+        async function createTodo(data){
+            if (data.id){
+                delete data['id']
+            }
+
+            let folderId = getCurrentFolder()
+            let url = `${FOLDERURL}/${folderId}/todo`
+
+            let todo = {}
+
+            await fetch(url, {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json",
+                    ...addHeader()
+                },
+                body : JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                
+                todo = result
+            })
+            console.log(todo)
+            return todo
+        }
+
+        function updateTodo(data){
+            let folderId = getCurrentFolder()
+            let url =`${FOLDERURL}/${folderId}/todo/${data.id}`
+
+            let todo = {}
+
+            return fetch(url, {
+                method : "PUT",
+                headers : {
+                    "Content-Type" : "application/json",
+                    ...addHeader()
+                },
+                body : JSON.stringify(data)
+            })
+            .then(response => response.json())
+        }
+
+        function substitueTodo(todo){
+            let todoId = todo.id
+            let todoElement = document.querySelector(`div[data-todo-id="${todoId}"]`)
+            // Replace Todo Name
+            todoElement.querySelector('.todoName').value = todo.name
+            // Replace Tasks
+            let tasks = buildTask(todo.tasks)
+            todoElement.querySelector('.taskContainer').innerHTML = tasks
+
+            deleteEventTask()
+        }
+
+        function todoSaveBtn(){
+            let saveBtn = document.querySelector("#save")
+           
+            
+            saveBtn.addEventListener("click", async () => {
+                let todoName = document.querySelector(".modal .todoName").value
+                let todoId = document.querySelector(".modal .todo").dataset?.todoId
+                let taskContainer = document.querySelector(".modal .anti-container")
+
+                tasks = buildTaskRequest(taskContainer)
+
+                data = {
+                    'id' : todoId,
+                    'name' : todoName,
+                    'tasks' : tasks,
+                    'folderId' : +getCurrentFolder()
+                }
+                if (todoId){
+                    let todo = updateTodo(data)
+                    todo
+                    .then(result => {
+                        if (result.status == 500){
+                            console.log(result.message)
+                            return
+                        }
+                        substitueTodo(result)
+                        createTodoPopUp()
+                    })
+                }
+                else{
+                    let todo = await createTodo(data)
+                    displayInPage([todo], buildTodoCard, TODOCONTAINER)
+                }
+                deletingModal()
+
+                
+            })
+            
+        }
+
+        // Shared Folders
+        function loadShared(){
+            // Change Folder Name in Page
+            let contianer = TODOCONTAINER
+            // Clear Contianer  
+            clearContainer(contianer)
+            // Get Folders from Backend
+            let url = `${FOLDERURL}/${+getCurrentFolder()}/todo/shared`
+            let sharedTodos = getLists(url)
+            sharedTodos.then( result => {
+                displayInPage(result, buildTodoCard, contianer)
+                deleteEventTask()
+                createTodoPopUp()
+            })
+            // Show Folders in HTML
+            
+        }
+        
+    </script>
+</body>
+</html>

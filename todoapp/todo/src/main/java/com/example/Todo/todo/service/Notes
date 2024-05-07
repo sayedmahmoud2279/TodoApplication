@@ -1,0 +1,156 @@
+isFolderOwner (keep or remove)
+combine ['canEditFolder', 'canReadFolder', 'canEditTodo', 'canReadTodo'] and add file type for separation
+add userId in all functions and send it from controller after getting it using JWT
+copyTodo need hard refactor
+refactor whole Service code
+
+Update in shortcut + making routes
+
+=========================================
+Test Cases : 
+	user creates todo list {
+        user is the owner of folder,
+        folder is read only . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is write . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        guest creates todo list
+    }
+
+	user deletes todo list {
+        user is the owner of folder and not owner of todo list,
+        folder is read only . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is write . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        guest delete todo listو
+        user is owner of todo,
+    }
+
+	user updates todo list {
+        user is the owner of folder and not owner of todo list,
+        folder is read only . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is read only + todo is public . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is write . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is write + todo is private. Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        guest update todo listو
+        user is owner of todo,
+    }
+
+	user gets a todo list {
+        user is the owner of folder and not owner of todo list,
+        folder is read only . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is write . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        guest view todo listو
+        user is owner of todo,
+    }
+    
+	user gets all todo list [returns all todo list in current folder] { 
+        user is the owner of folder and not owner of todo list,
+        folder is read only . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is read only + todo is private . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is write . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        guest view folder,
+        user is the owner of folder and owner of todo list,
+    }
+
+	user copies a todo list {
+        user is the owner of folder and not owner of todo list,
+        folder is read only . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        folder is read only + todo is private . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        destination folder is read-only . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        destination folder is write . Folder View type = >{
+            organization,
+            users,
+            public,
+            private
+        },
+        guest view folder,
+        user is the owner of folder and owner of todo list,
+    }
+
+	user adds shortcut of todo list
+	user deletes shortcut of todo list
+	user updates shortcut of todo list
+	user shares todo list {
+        user is owner of todo list,
+        user is owner of folder,
+        user has edit on todo,
+        user has edit on folder
+    }

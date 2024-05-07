@@ -1,0 +1,8 @@
+Share Process
+    {
+        public, => anyone with link can access
+        private, => none can access
+        users, => users only can access
+        org. => access via link + can add todo + edit status for tasks
+    }
+
